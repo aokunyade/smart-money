@@ -13,7 +13,7 @@
     { "id": "coatue",    "name": "Coatue Management",                    "short": "Coatue (Laffont)",             "type": "13F",   "category": "Large Cap Growth", "cik": "0001135730" },
     { "id": "viking",    "name": "Viking Global Investors",              "short": "Viking Global (Halvorsen)",    "type": "13F",   "category": "Large Cap Growth", "cik": "0001103804" },
     { "id": "d1",        "name": "D1 Capital Partners",                  "short": "D1 Capital (Sundheim)",        "type": "13F",   "category": "Large Cap Growth", "cik": "0001747057" },
-    { "id": "whalerock", "name": "Whale Rock Capital",                   "short": "Whale Rock (Grayson)",         "type": "13F",   "category": "Large Cap Growth", "cik": "0001387322" },
+    { "id": "whalerock", "name": "Whale Rock Capital",                   "short": "Whale Rock (Sacerdote)",       "type": "13F",   "category": "Large Cap Growth", "cik": "0001387322" },
     { "id": "dragoneer", "name": "Dragoneer Investment Group",           "short": "Dragoneer (McCarthy)",         "type": "13F",   "category": "Large Cap Growth", "cik": "0001602189" },
     { "id": "maverick",  "name": "Maverick Capital",                     "short": "Maverick Capital (Ainslie)",   "type": "13F",   "category": "Large Cap Growth", "cik": "0000934639" },
     { "id": "greenoaks", "name": "Greenoaks Capital Partners",           "short": "Greenoaks Capital",            "type": "13F",   "category": "Large Cap Growth", "cik": "0001840735" },
