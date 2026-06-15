@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Money Overlap</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #2d333b; --text: #c9d1d9;
+    --dim: #8b949e; --accent: #58a6ff; --green: #3fb950; --red: #f85149;
+    --gold: #d29922; --hover: #1f2630;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 13px/1.45 -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { padding: 14px 16px 60px; }
+  h1 { font-size: 19px; margin: 0 0 2px; }
+  .sub { color: var(--dim); font-size: 12px; margin-bottom: 12px; }
+  .sub b { color: var(--text); font-weight: 600; }
+
+  details.funds { background: var(--panel); border: 1px solid var(--border);
+                  border-radius: 8px; margin-bottom: 14px; }
+  details.funds summary { cursor: pointer; padding: 9px 14px; font-weight: 600;
+                          user-select: none; }
+  .fundgrid { padding: 4px 14px 12px; }
+  .fundgrid h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+                 color: var(--accent); margin: 12px 0 4px; }
+  .fundrow { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px solid #1b2129;
+             font-variant-numeric: tabular-nums; flex-wrap: wrap; }
+  .fundrow .fn { flex: 1 1 220px; min-width: 180px; }
+  .fundrow .fd { color: var(--dim); width: 70px; }
+  .fundrow .fa { width: 70px; text-align: right; }
+  .fundrow .fy { width: 70px; text-align: right; }
+
+  .controls { display: flex; gap: 10px; align-items: center; margin-bottom: 8px;
+              flex-wrap: wrap; }
+  .controls input { background: var(--panel); border: 1px solid var(--border);
+                    color: var(--text); border-radius: 6px; padding: 6px 10px;
+                    font-size: 13px; width: 230px; max-width: 60vw; }
+  #status { color: var(--gold); font-size: 12px; min-height: 16px; }
+
+  .tablebox { overflow: auto; max-height: calc(100vh - 70px); border: 1px solid var(--border);
+              border-radius: 8px; }
+  table { border-collapse: separate; border-spacing: 0; white-space: nowrap;
+          font-variant-numeric: tabular-nums; }
+  thead th { position: sticky; background: var(--panel); z-index: 3; }
+  thead tr.groups th { top: 0; height: 26px; font-size: 11px; color: var(--accent);
+                       text-transform: uppercase; letter-spacing: .05em;
+                       border-bottom: 1px solid var(--border); }
+  thead tr.cols th { top: 26px; cursor: pointer; padding: 6px 8px; font-size: 12px;
+                     text-align: right; border-bottom: 1px solid var(--border);
+                     max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+  thead tr.cols th:hover { color: var(--accent); }
+  tbody td { padding: 4px 8px; text-align: right; border-bottom: 1px solid #1b2129; }
+  tbody tr:hover td { background: var(--hover); }
+  td.l, th.l { text-align: left; }
+  .sticky1, .sticky2 { position: sticky; background: var(--bg); z-index: 2; }
+  .sticky1 { left: 0; }
+  thead .sticky1, thead .sticky2 { background: var(--panel); z-index: 4; }
+  tbody tr:hover .sticky1, tbody tr:hover .sticky2 { background: var(--hover); }
+  .pos { color: var(--green); } .neg { color: var(--red); }
+  .dim { color: var(--dim); } .gold { color: var(--gold); }
+  .up { color: var(--green); font-size: 10px; }
+  .down { color: var(--red); font-size: 10px; }
+  .star { color: var(--gold); font-size: 10px; }
+  .cellw { color: var(--text); }
+  .nsp { color: var(--dim); font-size: 10px; margin-left: 3px; }
+  .sortind { color: var(--accent); font-size: 10px; }
+  @media (max-width: 640px) {
+    .wrap { padding: 10px 8px 40px; }
+    thead tr.cols th, tbody td { padding: 4px 6px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Smart Money Overlap</h1>
+  <div class="sub" id="subtitle"></div>
+  <details class="funds"><summary>Funds</summary><div class="fundgrid" id="fundgrid"></div></details>
+  <div class="controls">
+    <input id="filter" type="search" placeholder="Filter ticker or company…">
+    <span id="status"></span>
+  </div>
+  <div class="tablebox"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+</div>
+
+<!--HOLDINGS_DATA_START--><script>window.HOLDINGS_DATA = null;</script><!--HOLDINGS_DATA_END-->
+
+<script>
+(function () {
+  const D = window.HOLDINGS_DATA;
+  if (!D) {
+    document.getElementById("subtitle").textContent =
+      "No data yet — run the pipeline (scripts/) or wait for the first GitHub Actions run.";
+    return;
+  }
+  const CATS = [...new Set(D.funds.map(f => f.category))];
+  const fundsByCat = c => D.funds.filter(f => f.category === c);
+
+  // ---------- header ----------
+  document.getElementById("subtitle").innerHTML =
+    `min position <b>${D.params.min_weight_pct}%</b> · held by ≥ <b>${D.params.min_funds}</b> funds` +
+    ` &nbsp;·&nbsp; Updated ${D.generated}`;
+  document.querySelector("details.funds summary").textContent = `Funds (${D.funds.length})`;
+
+  // ---------- fund panel ----------
+  const fmtAum = v => v == null ? "—" :
+    v >= 1e12 ? "$" + (v/1e12).toFixed(1) + "T" :
+    v >= 1e9  ? "$" + (v/1e9).toFixed(1)  + "B" : "$" + (v/1e6).toFixed(0) + "M";
+  const fg = document.getElementById("fundgrid");
+  fg.innerHTML = CATS.map(c => `<h3>${c}</h3>` + fundsByCat(c).map(f => `
+    <div class="fundrow"><span class="fn">${f.short}</span>
+      <span class="fd">${(f.report || "").slice(0,7)}${f.type === "13F" ? " (13F)" : ""}</span>
+      <span class="fa">${f.type === "13F" ? "—" : fmtAum(f.aum)}</span>
+      <span class="fy ${f.ytd > 0 ? "pos" : f.ytd < 0 ? "neg" : "dim"}">${
+        f.ytd == null ? "—" : (f.ytd > 0 ? "+" : "") + f.ytd.toFixed(1) + "%"}</span>
+    </div>`).join("")).join("");
+
+  // ---------- formatting ----------
+  const fmtCap = v => v == null ? "—" :
+    v >= 1e12 ? "$" + (v/1e12).toFixed(1) + "T" :
+    v >= 1e9  ? "$" + (v/1e9).toFixed(1)  + "B" : "$" + (v/1e6).toFixed(0) + "M";
+  const fmtRet = v => v == null ? '<span class="dim">—</span>' :
+    `<span class="${v >= 0 ? "pos" : "neg"}">${v >= 0 ? "+" : ""}${v.toFixed(1)}%</span>`;
+  const fmtDelta = (cur, prev, isNew) => isNew ? '<span class="gold">NEW</span>' :
+    prev == null || prev === 0 ? '<span class="dim">—</span>' :
+    fmtRet(Math.round(100 * (cur - prev) / prev));
+  const flagMark = f => f === "up" ? '<span class="up">▲</span>' :
+    f === "down" ? '<span class="down">▼</span>' :
+    f === "new" ? '<span class="star">★</span>' : "";
+  const cell = p => p == null ? '<span class="dim">—</span>' :
+    `<span class="cellw">${p.w.toFixed(2)}%</span>${flagMark(p.flag)}`;
+
+  // ---------- columns ----------
+  const baseCols = [
+    { key: "count", lab: "#", grp: "" },
+    { key: "ticker", lab: "Ticker", grp: "", left: true, cls: "sticky1" },
+    { key: "name", lab: "Company", grp: "", left: true, cls: "sticky2" },
+    { key: "mktCap", lab: "Mkt Cap", grp: "" },
+    { key: "ret1m", lab: "1M", grp: "Performance" }, { key: "ret3m", lab: "3M", grp: "Performance" },
+    { key: "ret1y", lab: "1Y", grp: "Performance" }, { key: "ret3y", lab: "3Y", grp: "Performance" },
+    { key: "ret5y", lab: "5Y", grp: "Performance" },
+    { key: "val", lab: "Val", grp: "Valuation" },
+    { key: "agg", lab: "Agg Wt", grp: "" }, { key: "dq", lab: "ΔQ", grp: "" },
+  ];
+  const fundCols = D.funds.map(f => ({ key: "f:" + f.id, lab: f.short, grp: f.category }));
+  const COLS = baseCols.concat(fundCols);
+
+  let sortKey = null, sortDir = -1;   // null = default order
+  let filter = "";
+
+  function value(s, key) {
+    if (key.startsWith("f:")) { const p = s.positions[key.slice(2)]; return p ? p.w : -1; }
+    if (key === "dq") return s.prevAgg ? (s.agg - s.prevAgg) / s.prevAgg : -999;
+    const v = s[key];
+    return v == null ? -1e15 : (typeof v === "string" ? v.toLowerCase() : v);
+  }
+
+  function render() {
+    const thead = document.querySelector("#tbl thead");
+    const groups = [];
+    let i = 0;
+    while (i < COLS.length) {
+      let j = i;
+      while (j < COLS.length && COLS[j].grp === COLS[i].grp) j++;
+      groups.push({ name: COLS[i].grp, span: j - i });
+      i = j;
+    }
+    thead.innerHTML =
+      `<tr class="groups">${groups.map(g => `<th colspan="${g.span}">${g.name}</th>`).join("")}</tr>` +
+      `<tr class="cols">${COLS.map(c =>
+        `<th data-key="${c.key}" class="${c.left ? "l " : ""}${c.cls || ""}" title="${c.lab}">${c.lab}` +
+        (sortKey === c.key ? ` <span class="sortind">${sortDir < 0 ? "▼" : "▲"}</span>` : "") +
+        `</th>`).join("")}</tr>`;
+
+    let rows = D.stocks.filter(s => !filter ||
+      s.ticker.toLowerCase().includes(filter) || s.name.toLowerCase().includes(filter));
+    if (sortKey) rows = rows.slice().sort((a, b) => {
+      const va = value(a, sortKey), vb = value(b, sortKey);
+      return (va < vb ? -1 : va > vb ? 1 : 0) * sortDir;
+    });
+
+    document.querySelector("#tbl tbody").innerHTML = rows.map(s => `<tr>
+      <td>${s.count}</td>
+      <td class="l sticky1"><b>${s.ticker}</b>${s.isNew ? '<span class="star">★</span>' : ""}${
+        s.sp500 === false ? '<span class="nsp">non-SP</span>' : ""}</td>
+      <td class="l sticky2" style="max-width:210px;overflow:hidden;text-overflow:ellipsis">${s.name}</td>
+      <td>${fmtCap(s.mktCap)}</td>
+      <td>${fmtRet(s.ret1m)}</td><td>${fmtRet(s.ret3m)}</td><td>${fmtRet(s.ret1y)}</td>
+      <td>${fmtRet(s.ret3y)}</td><td>${fmtRet(s.ret5y)}</td>
+      <td>${s.val != null ? s.val + '<span class="dim">' + s.valLabel + "</span>" : '<span class="dim">—</span>'}</td>
+      <td><b>${s.agg.toFixed(1)}%</b></td>
+      <td>${fmtDelta(s.agg, s.prevAgg, s.isNew)}</td>
+      ${D.funds.map(f => `<td>${cell(s.positions[f.id])}</td>`).join("")}
+    </tr>`).join("");
+
+    const st = document.getElementById("status");
+    if (sortKey && sortKey.startsWith("f:")) {
+      const f = D.funds.find(f => "f:" + f.id === sortKey);
+      st.textContent = `Sorted by weight for ${f.short} — click the column again to restore default order`;
+    } else st.textContent = "";
+
+    // measure sticky offset for second column
+    const first = document.querySelector("tbody .sticky1") || document.querySelector("thead .sticky1");
+    if (first) {
+      const w = first.getBoundingClientRect().width;
+      document.querySelectorAll(".sticky2").forEach(el => el.style.left = w + "px");
+    }
+
+    thead.querySelectorAll("th[data-key]").forEach(th => th.onclick = () => {
+      const k = th.dataset.key;
+      if (sortKey === k) {
+        if (k.startsWith("f:")) { sortKey = null; }          // fund col: 2nd click restores
+        else if (sortDir === -1) sortDir = 1;
+        else { sortKey = null; sortDir = -1; }
+      } else { sortKey = k; sortDir = -1; }
+      render();
+    });
+  }
+
+  document.getElementById("filter").addEventListener("input", e => {
+    filter = e.target.value.trim().toLowerCase(); render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>
+ 
