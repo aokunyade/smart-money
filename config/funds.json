@@ -1,0 +1,40 @@
+{
+  "params": { "min_weight_pct": 0.25, "min_funds": 2 },
+  "funds": [
+    { "id": "fdgrx",     "name": "FDGRX / Fidelity Growth Company",      "short": "FDGRX (Wymer)",                "type": "NPORT", "category": "Large Cap Growth", "cik": "0000707823", "seriesId": "S000007119", "quoteTicker": "FDGRX" },
+    { "id": "fbgrx",     "name": "FBGRX / Fidelity Blue Chip Growth",    "short": "FBGRX (Kalra)",                "type": "NPORT", "category": "Large Cap Growth", "cik": "0000754510", "seriesId": "S000007195", "quoteTicker": "FBGRX" },
+    { "id": "focpx",     "name": "FOCPX / Fidelity OTC Portfolio",       "short": "FOCPX (Lee)",                  "type": "NPORT", "category": "Large Cap Growth", "cik": "0000754510", "seriesId": "S000007191", "quoteTicker": "FOCPX" },
+    { "id": "atreides",  "name": "Atreides Management",                  "short": "Atreides (Baker)",             "type": "13F",   "category": "Large Cap Growth", "cik": "0001777813" },
+    { "id": "durable",   "name": "Durable Capital Partners",             "short": "Durable Capital (Ellenbogen)", "type": "13F",   "category": "Large Cap Growth", "cik": "0001798849" },
+    { "id": "tiger",     "name": "Tiger Global Management",              "short": "Tiger Global (Coleman)",       "type": "13F",   "category": "Large Cap Growth", "cik": "0001167483" },
+    { "id": "lonepine",  "name": "Lone Pine Capital",                    "short": "Lone Pine (Mandel)",           "type": "13F",   "category": "Large Cap Growth", "cik": "0001061165" },
+    { "id": "tci",       "name": "TCI Fund Management",                  "short": "TCI Fund (Hohn)",              "type": "13F",   "category": "Large Cap Growth", "cik": "0001647251" },
+    { "id": "altarock",  "name": "AltaRock Partners",                    "short": "AltaRock Partners",            "type": "13F",   "category": "Large Cap Growth", "cik": "0001631014" },
+    { "id": "coatue",    "name": "Coatue Management",                    "short": "Coatue (Laffont)",             "type": "13F",   "category": "Large Cap Growth", "cik": "0001135730" },
+    { "id": "viking",    "name": "Viking Global Investors",              "short": "Viking Global (Halvorsen)",    "type": "13F",   "category": "Large Cap Growth", "cik": "0001103804" },
+    { "id": "d1",        "name": "D1 Capital Partners",                  "short": "D1 Capital (Sundheim)",        "type": "13F",   "category": "Large Cap Growth", "cik": "0001747057" },
+    { "id": "whalerock", "name": "Whale Rock Capital",                   "short": "Whale Rock (Grayson)",         "type": "13F",   "category": "Large Cap Growth", "cik": "0001387322" },
+    { "id": "dragoneer", "name": "Dragoneer Investment Group",           "short": "Dragoneer (McCarthy)",         "type": "13F",   "category": "Large Cap Growth", "cik": "0001602189" },
+    { "id": "maverick",  "name": "Maverick Capital",                     "short": "Maverick Capital (Ainslie)",   "type": "13F",   "category": "Large Cap Growth", "cik": "0000934639" },
+    { "id": "greenoaks", "name": "Greenoaks Capital Partners",           "short": "Greenoaks Capital",            "type": "13F",   "category": "Large Cap Growth", "cik": "0001840735" },
+    { "id": "trbcx",     "name": "TRBCX / T. Rowe Price Blue Chip Growth","short": "TRBCX / T. Rowe Blue Chip",   "type": "NPORT", "category": "Large Cap Growth", "cik": "0000902259", "seriesId": "S000002069", "quoteTicker": "TRBCX" },
+    { "id": "fmagx",     "name": "FMAGX / Fidelity Magellan",            "short": "FMAGX / Fidelity Magellan",    "type": "NPORT", "category": "Large Cap Growth", "cik": "0000061397", "seriesId": "S000007112", "quoteTicker": "FMAGX" },
+    { "id": "prgfx",     "name": "PRGFX / T. Rowe Price Growth Stock",   "short": "PRGFX / T. Rowe Growth",       "type": "NPORT", "category": "Large Cap Growth", "cik": "0000080257", "seriesId": "S000002087", "quoteTicker": "PRGFX" },
+
+    { "id": "prwcx",     "name": "PRWCX / T. Rowe Capital Appreciation", "short": "PRWCX / Capital Appreciation", "type": "NPORT", "category": "Large Cap Blend",  "cik": "0000793347", "seriesId": "S000002070", "quoteTicker": "PRWCX" },
+    { "id": "akre",      "name": "Akre Capital Management",              "short": "Akre Capital (Akre)",          "type": "13F",   "category": "Large Cap Blend",  "cik": "0001112520" },
+    { "id": "pershing",  "name": "Pershing Square Capital",              "short": "Pershing Square (Ackman)",     "type": "13F",   "category": "Large Cap Blend",  "cik": "0001336528" },
+    { "id": "thirdpoint","name": "Third Point",                          "short": "Third Point (Loeb)",           "type": "13F",   "category": "Large Cap Blend",  "cik": "0001040273" },
+    { "id": "senator",   "name": "Senator Investment Group",             "short": "Senator Investment",           "type": "13F",   "category": "Large Cap Blend",  "cik": "0001443689" },
+    { "id": "glenview",  "name": "Glenview Capital Management",          "short": "Glenview (Robbins)",           "type": "13F",   "category": "Large Cap Blend",  "cik": "0001138995" },
+    { "id": "citadel",   "name": "Citadel Advisors",                     "short": "Citadel (Griffin)",            "type": "13F",   "category": "Large Cap Blend",  "cik": "0001423053" },
+    { "id": "point72",   "name": "Point72 Asset Management",             "short": "Point72 (Cohen)",              "type": "13F",   "category": "Large Cap Blend",  "cik": "0001603466" },
+    { "id": "sequx",     "name": "SEQUX / Sequoia Fund",                 "short": "SEQUX / Sequoia",              "type": "NPORT", "category": "Large Cap Blend",  "cik": "0000089043", "seriesId": "S000012155", "quoteTicker": "SEQUX" },
+
+    { "id": "trmcx",     "name": "TRMCX / T. Rowe Price Mid-Cap Value",  "short": "TRMCX / T. Rowe Mid-Cap Val",  "type": "NPORT", "category": "Small / Mid Cap",  "cik": "0001012678", "seriesId": "S000002103", "quoteTicker": "TRMCX" },
+    { "id": "prnhx",     "name": "PRNHX / T. Rowe Price New Horizons",   "short": "PRNHX / T. Rowe New Horizons", "type": "NPORT", "category": "Small / Mid Cap",  "cik": "0000080248", "seriesId": "S000002106", "quoteTicker": "PRNHX" },
+
+    { "id": "fundsmith", "name": "Fundsmith",                            "short": "Fundsmith (T. Smith)",         "type": "13F",   "category": "Global / International", "cik": "0001569205" },
+    { "id": "baillie",   "name": "Baillie Gifford",                      "short": "Baillie Gifford",              "type": "13F",   "category": "Global / International", "cik": "0001088875" }
+  ]
+}
